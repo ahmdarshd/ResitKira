@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#16302B" />
+<title>ResitKira — LHDN Relief Ledger</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">RK</span>
+    <div class="brand-text">
+      <h1>ResitKira</h1>
+      <p>LHDN relief ledger</p>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span id="netStatus" class="net-badge">checking…</span>
+    <button id="settingsBtn" class="icon-btn" title="Settings" aria-label="Settings">⚙</button>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-view="capture">Capture</button>
+  <button class="tab-btn" data-view="ledger">Ledger</button>
+  <button class="tab-btn" data-view="donation">Donation</button>
+  <button class="tab-btn" data-view="taxcalc">Tax Calc</button>
+  <button class="tab-btn" data-view="settings">Settings</button>
+</nav>
+
+<main>
+
+  <!-- CAPTURE VIEW -->
+  <section id="view-capture" class="view active">
+    <div class="capture-card">
+      <p class="capture-hint">Photograph a receipt. It'll be read, matched against the current LHDN relief list, and filed — into every category it qualifies for.</p>
+      <label class="capture-drop" for="fileInput">
+        <span class="capture-drop-icon">📷</span>
+        <span>Tap to take a photo or choose an image</span>
+        <input type="file" id="fileInput" accept="image/*" hidden />
+      </label>
+      <div id="captureStatus" class="capture-status" hidden></div>
+    </div>
+
+    <div id="recentList" class="recent-list"></div>
+  </section>
+
+  <!-- REVIEW MODAL -->
+  <section id="reviewModal" class="modal" hidden>
+    <div class="modal-sheet">
+      <h2>Confirm receipt</h2>
+      <img id="reviewImg" class="review-img" alt="Captured receipt" />
+      <div class="field-row">
+        <label>Merchant<input id="reviewMerchant" type="text" /></label>
+        <label>Date<input id="reviewDate" type="date" /></label>
+      </div>
+      <label class="field-full">Total receipt amount (RM)<input id="reviewAmount" type="number" step="0.01" /></label>
+
+      <p class="section-label">Matched categories — tick all that apply</p>
+      <div id="reviewCategories" class="review-categories"></div>
+
+      <p id="reviewSourceNote" class="source-note"></p>
+
+      <div class="modal-actions">
+        <button id="reviewCancel" class="btn-ghost">Discard</button>
+        <button id="reviewSave" class="btn-primary">Save to ledger</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEDGER VIEW -->
+  <section id="view-ledger" class="view">
+    <div class="ledger-summary">
+      <label>Assessment year
+        <select id="yearFilter"></select>
+      </label>
+      <button id="exportCsvBtn" class="btn-export">Export as CSV</button>
+      <button id="exportZipBtn" class="btn-export">Download receipts (ZIP)</button>
+    </div>
+    <div id="ledgerList" class="ledger-list"></div>
+  </section>
+
+  <!-- IMAGE VIEWER MODAL -->
+  <section id="imageViewerModal" class="modal" hidden>
+    <div class="modal-sheet">
+      <h2>Receipt</h2>
+      <img id="viewerImg" class="review-img" alt="Full-size receipt" />
+      <p id="viewerCaption" class="source-note"></p>
+      <div class="modal-actions">
+        <button id="viewerClose" class="btn-ghost">Close</button>
+        <button id="viewerDownload" class="btn-primary">Download image</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DONATION VIEW (capture + ledger combined — donations are a deduction, tracked separately from relief) -->
+  <section id="view-donation" class="view">
+    <div class="capture-card">
+      <p class="capture-hint">Donations to approved institutions are a tax <strong>deduction</strong> (off aggregate income, capped at 10% of it), not a relief — that's why they're tracked here separately from the Ledger tab.</p>
+      <label class="capture-drop" for="donationFileInput">
+        <span class="capture-drop-icon">🧾</span>
+        <span>Tap to photograph a donation receipt</span>
+        <input type="file" id="donationFileInput" accept="image/*" hidden />
+      </label>
+      <div id="donationCaptureStatus" class="capture-status" hidden></div>
+      <p class="settings-note">
+        LHDN only grants the deduction if the recipient is approved under Subsection 44(6).
+        <a href="https://www.hasil.gov.my/institusi-organisasi-tabung/semakan-kelulusan-derma/?isStampsSite=false&lang=ms" target="_blank" rel="noopener">Check approval status on LHDN's site ↗</a>
+      </p>
+    </div>
+
+    <div class="ledger-summary" style="margin-top:1rem;">
+      <label>Assessment year
+        <select id="donationYearFilter"></select>
+      </label>
+    </div>
+    <div id="donationList" class="ledger-list"></div>
+  </section>
+
+  <!-- DONATION REVIEW MODAL -->
+  <section id="donationReviewModal" class="modal" hidden>
+    <div class="modal-sheet">
+      <h2>Confirm donation</h2>
+      <img id="donationReviewImg" class="review-img" alt="Captured donation receipt" />
+      <div class="field-row">
+        <label>Organization<input id="donationReviewOrg" type="text" /></label>
+        <label>Date<input id="donationReviewDate" type="date" /></label>
+      </div>
+      <label class="field-full">Amount (RM)<input id="donationReviewAmount" type="number" step="0.01" /></label>
+
+      <label class="cat-option" style="margin-bottom:0.5rem;">
+        <input type="checkbox" id="donationReviewUnlimited" />
+        <span class="cat-option-label">
+          <span>Government / state / local authority (uncapped)</span>
+          <span class="conf">Leave unticked for NGOs, mosques, temples, charities, foundations</span>
+        </span>
+      </label>
+      <label class="cat-option">
+        <input type="checkbox" id="donationReviewVerified" />
+        <span class="cat-option-label">
+          <span>I've checked this org on LHDN's approval list</span>
+          <span class="conf">Otherwise it's flagged unverified in your donation log</span>
+        </span>
+      </label>
+
+      <p id="donationReviewSourceNote" class="source-note"></p>
+
+      <div class="modal-actions">
+        <button id="donationReviewCancel" class="btn-ghost">Discard</button>
+        <button id="donationReviewSave" class="btn-primary">Save donation</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DONATION IMAGE VIEWER MODAL -->
+  <section id="donationImageViewerModal" class="modal" hidden>
+    <div class="modal-sheet">
+      <h2>Donation receipt</h2>
+      <img id="donationViewerImg" class="review-img" alt="Full-size donation receipt" />
+      <p id="donationViewerCaption" class="source-note"></p>
+      <div class="modal-actions">
+        <button id="donationViewerClose" class="btn-ghost">Close</button>
+        <button id="donationViewerDownload" class="btn-primary">Download image</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAX CALCULATION VIEW -->
+  <section id="view-taxcalc" class="view">
+    <div class="settings-card">
+      <h2>Tax calculation</h2>
+      <p class="settings-note">Semi-automatic: reliefs and donations pull from your Ledger and Donation tabs for the selected year; everything else you enter by hand.</p>
+      <label class="field-full">Assessment year
+        <select id="taxCalcYearFilter"></select>
+      </label>
+      <label class="field-full">Annual salary — from EA Form (RM)<input id="taxSalaryInput" type="number" step="0.01" placeholder="e.g. 60000" /></label>
+      <label class="field-full">Zakat paid this year (RM)<input id="taxZakatInput" type="number" step="0.01" placeholder="0" /></label>
+      <label class="field-full">Other reliefs not tracked in Ledger — spouse, child, SOCSO, etc. (RM)<input id="taxOtherReliefsInput" type="number" step="0.01" placeholder="0" /></label>
+      <label class="cat-option">
+        <input type="checkbox" id="taxPersonalReliefToggle" checked />
+        <span class="cat-option-label">
+          <span>Include automatic individual relief (RM9,000)</span>
+          <span class="conf">Applies to every resident taxpayer</span>
+        </span>
+      </label>
+    </div>
+
+    <div class="settings-card">
+      <h2>Breakdown</h2>
+      <div id="taxBreakdown"></div>
+      <p class="settings-note">Zakat is technically a <strong>rebate</strong> (deducted from final tax payable, ringgit-for-ringgit), not a deduction from income — shown that way below even though it's entered alongside donations for convenience.</p>
+      <p class="settings-note">Estimate only — doesn't cover business income, spouse joint assessment, dividend tax, or every special case. Verify in MyTax before filing.</p>
+    </div>
+  </section>
+
+  <!-- SETTINGS VIEW -->
+  <section id="view-settings" class="view">
+    <div class="settings-card">
+      <h2>Gemini (online categorization)</h2>
+      <p class="settings-note">Used only when the device is online. Your key stays on this device and is sent directly to Google — there is no server in between.</p>
+      <label class="field-full">Gemini API key<input id="geminiKey" type="password" autocomplete="off" /></label>
+      <label class="field-full">Model id
+        <input id="geminiModel" type="text" placeholder="gemini-2.5-flash" />
+      </label>
+      <p class="settings-note">Google renames/retires model ids periodically. If requests start failing with a 404, check <span class="mono">aistudio.google.com</span> for the current model id and update it here.</p>
+    </div>
+
+    <div class="settings-card">
+      <h2>LHDN relief list</h2>
+      <p class="settings-note">Bundled version: <span id="bundledVersion" class="mono"></span></p>
+      <p class="settings-note" id="refreshedInfo">Not refreshed from an online source yet.</p>
+      <label class="field-full">Refresh URL (a JSON file you host and update each tax year)
+        <input id="refreshUrl" type="url" placeholder="https://example.com/lhdn-relief-2026.json" />
+      </label>
+      <button id="refreshNowBtn" class="btn-primary">Refresh now</button>
+    </div>
+
+    <div class="settings-card">
+      <h2>Backup & restore</h2>
+      <p class="settings-note">Your receipts live only in this browser's storage. Clearing cookies/site data, switching phones, or uninstalling Chrome will erase them — always back up first if you're about to do any of that.</p>
+      <button id="backupAllBtn" class="btn-primary" style="margin-bottom:0.7rem;">Back up everything (ZIP)</button>
+      <p class="settings-note">Downloads every receipt and donation across all years, sorted into folders, with a manifest that lets this app restore it exactly.</p>
+      <label class="btn-ghost" for="restoreZipInput" id="restoreZipBtn" style="display:block;text-align:center;cursor:pointer;">
+        Restore from ZIP backup
+        <input type="file" id="restoreZipInput" accept=".zip" hidden />
+      </label>
+      <p class="settings-note">Only restores zips created by this app's backup button (it needs the manifest.json inside). Records already in your ledger are skipped, so restoring the same backup twice won't duplicate anything.</p>
+    </div>
+
+    <div class="settings-card">
+      <h2>Data</h2>
+      <p class="settings-note">Everything is stored locally on this device (IndexedDB). Nothing is uploaded except the receipt image sent to Gemini when you're online and a key is set.</p>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js"></script>
+<script src="lhdn-data.js"></script>
+<script src="tax-brackets.js"></script>
+<script src="db.js"></script>
+<script src="gemini.js"></script>
+<script src="offline-engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

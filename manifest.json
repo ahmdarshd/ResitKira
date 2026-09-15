@@ -1,0 +1,14 @@
+{
+  "name": "ResitKira — LHDN Relief Ledger",
+  "short_name": "ResitKira",
+  "description": "Offline-first receipt scanner that files receipts under LHDN tax relief categories.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F1EDE2",
+  "theme_color": "#16302B",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
