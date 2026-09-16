@@ -1,23 +1,23 @@
 /**
- * Malaysian resident-individual progressive tax brackets, YA2025 (unchanged
- * from YA2023/YA2024 at time of writing). Source: LHDN, cross-checked via
- * web search when this was built — verify against hasil.gov.my before
- * relying on this for actual filing, since rates/thresholds can change by
- * budget announcement.
+ * Malaysian resident-individual progressive tax brackets, YA2023–2025
+ * (unchanged across these three years). Source: LHDN official page,
+ * https://www.hasil.gov.my/en/individu/kadar-cukai/ — fetched and
+ * cross-checked directly against the primary source, not a third-party
+ * summary, after an earlier version of this file used a wrong table.
  */
-const TAX_BRACKETS_VERSION = "YA2025-2026-09-14";
+const TAX_BRACKETS_VERSION = "YA2023-2025-verified-hasil.gov.my-2026-09-16";
 
 const TAX_BRACKETS = [
   { upTo: 5000, rate: 0 },
   { upTo: 20000, rate: 0.01 },
   { upTo: 35000, rate: 0.03 },
-  { upTo: 50000, rate: 0.08 },
-  { upTo: 70000, rate: 0.13 },
-  { upTo: 100000, rate: 0.21 },
-  { upTo: 400000, rate: 0.24 },
-  { upTo: 600000, rate: 0.245 },
-  { upTo: 2000000, rate: 0.25 },
-  { upTo: Infinity, rate: 0.26 }
+  { upTo: 50000, rate: 0.06 },
+  { upTo: 70000, rate: 0.11 },
+  { upTo: 100000, rate: 0.19 },
+  { upTo: 400000, rate: 0.25 },
+  { upTo: 600000, rate: 0.26 },
+  { upTo: 2000000, rate: 0.28 },
+  { upTo: Infinity, rate: 0.30 }
 ];
 
 const PERSONAL_RELIEF_AMOUNT = 9000;
