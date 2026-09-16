@@ -180,6 +180,18 @@
       <label class="field-full">Annual salary — from EA Form (RM)<input id="taxSalaryInput" type="number" step="0.01" placeholder="e.g. 60000" /></label>
       <label class="field-full">Zakat paid this year (RM)<input id="taxZakatInput" type="number" step="0.01" placeholder="0" /></label>
       <label class="field-full">Other reliefs not tracked in Ledger — spouse, child, SOCSO, etc. (RM)<input id="taxOtherReliefsInput" type="number" step="0.01" placeholder="0" /></label>
+
+      <p class="section-label">Reference — common reliefs not captured by receipt photos (not exhaustive)</p>
+      <ul class="reference-list">
+        <li>Individual & dependent relatives: RM9,000 <em>(already applied automatically below — don't add again)</em></li>
+        <li>Spouse: RM4,000, if spouse has no income / qualifies</li>
+        <li>Children below 18: RM2,000 each</li>
+        <li>Child 18+ in qualifying full-time education: up to RM8,000</li>
+        <li>Education/medical insurance: RM4,000</li>
+        <li>SOCSO: RM350</li>
+      </ul>
+      <p class="settings-note">Childcare/TASKA, EPF & life insurance, parents' medical, and EV charging aren't listed here since they're already tracked as Ledger categories — photograph those receipts instead of entering them in this field. LHDN updates relief amounts most years — verify before relying on this list.</p>
+      <a class="btn-reference" href="https://www.hasil.gov.my/individu/pelepasan-cukai/" target="_blank" rel="noopener">Check current tax relief list on LHDN ↗</a>
       <label class="cat-option">
         <input type="checkbox" id="taxPersonalReliefToggle" checked />
         <span class="cat-option-label">
@@ -191,6 +203,7 @@
 
     <div class="settings-card">
       <h2>Breakdown</h2>
+      <a class="btn-reference" href="https://www.hasil.gov.my/individu/kadar-cukai/" target="_blank" rel="noopener" style="margin-bottom:0.8rem;">Check current tax brackets on LHDN ↗</a>
       <div id="taxBreakdown"></div>
       <p class="settings-note">Zakat is technically a <strong>rebate</strong> (deducted from final tax payable, ringgit-for-ringgit), not a deduction from income — shown that way below even though it's entered alongside donations for convenience.</p>
       <p class="settings-note">Estimate only — doesn't cover business income, spouse joint assessment, dividend tax, or every special case. Verify in MyTax before filing.</p>
@@ -248,4 +261,5 @@
 <script src="offline-engine.js"></script>
 <script src="app.js"></script>
 </body>
-</html>
+          </html>
+          
