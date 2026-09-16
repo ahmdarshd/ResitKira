@@ -299,6 +299,21 @@ input, select {
 .badge-unlimited { background: var(--gold-soft); color: var(--ink); }
 .badge-unverified { background: #F0D6D6; color: var(--danger); }
 
+.btn-reference {
+  display: inline-block;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--gold);
+  background: var(--gold-soft);
+  color: var(--ink);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.reference-list { margin: 0.5rem 0; padding-left: 1.1rem; font-size: 0.83rem; color: var(--ink-soft); }
+.reference-list li { margin-bottom: 0.25rem; }
+.reference-list .already-tracked { color: var(--ink); font-weight: 600; }
+
 @media (min-width: 480px) {
   .modal { align-items: center; justify-content: center; }
   .modal-sheet { max-width: 480px; border-radius: 14px; }
