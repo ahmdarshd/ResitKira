@@ -102,6 +102,15 @@ year:
   RM35,000 chargeable income, plus zakat as a ringgit-for-ringgit rebate on
   the final tax bill — not a deduction from income, even though it's
   entered in the same section for convenience).
+- The Tax Calc tab links directly to LHDN's live tax-rate and tax-relief
+  pages ("Check current tax brackets on LHDN ↗" and "Check current tax
+  relief list on LHDN ↗") rather than hardcoding a "last verified" date —
+  rates and relief amounts can change with each Budget, so these are meant
+  to be tapped whenever you're unsure the app's numbers are still current.
+- The reference list of common "other reliefs" (spouse, child, SOCSO, etc.)
+  flags which items overlap with receipt categories already tracked in the
+  Ledger (childcare, EPF/life insurance, parents' medical, EV charging) —
+  don't enter those in "Other reliefs" too, or they'll be double-counted.
 - This is an estimate: it doesn't cover business income, spouse joint
   assessment, dividend tax, or every special case. Always verify in MyTax
   before filing.
@@ -133,3 +142,4 @@ The app ships with a YA2025 relief category list baked in
   to split a single receipt's *items* across categories (e.g. RM50 of it is
   books, RM30 is sports gear), you'll need to enter those as two manual
   amounts rather than the app parsing individual line totals.
+  
